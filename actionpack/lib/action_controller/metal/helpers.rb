@@ -93,20 +93,11 @@ module ActionController
         super(args)
       end
 
-      def all_helpers_from_path(path)
-        helpers = Array(path).flat_map do |_path|
-          extract = /^#{Regexp.quote(_path.to_s)}\/?(.*)_helper.rb$/
-          names = Dir["#{_path}/**/*_helper.rb"].map { |file| file.sub(extract, '\1') }
-          names.sort!
-        end
-        helpers.uniq!
-        helpers
-      end
 
       private
       # Extract helper names from files in <tt>app/helpers/**/*_helper.rb</tt>
       def all_application_helpers
-        all_helpers_from_path(helpers_path)
+        Dir.glob("#{helpers_path}/**/*_helper.rb").map {|path| File.basename(path).gsub('_helper.rb', '')}.sort!
       end
     end
   end
